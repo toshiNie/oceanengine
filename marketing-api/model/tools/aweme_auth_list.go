@@ -11,10 +11,10 @@ import (
 
 // AwemeAuthListRequest 获取抖音授权关系
 type AwemeAuthListRequest struct {
-	// AdvertiserID 广告主ID
-	AdvertiserID uint64 `json:"advertiser_id,omitempty"`
 	// Filtering 筛选条件
 	Filtering *AwemeAuthListFilter `json:"filtering,omitempty"`
+	// AdvertiserID 广告主ID
+	AdvertiserID uint64 `json:"advertiser_id,omitempty"`
 	// Page 页码
 	Page int `json:"page,omitempty"`
 	// PageSize 页面大小
@@ -24,7 +24,13 @@ type AwemeAuthListRequest struct {
 // AwemeAuthListFilter 筛选条件
 type AwemeAuthListFilter struct {
 	// AuthType 授权类型，可选值:
-	// AWEME_ACCOUNT: 抖音号授权、VIDEO_ITEM: 单视频授权
+	// AWEME_ACCOUNT 抖音号授权
+	// LIVE_ACCOUNT 直播授权
+	// VIDEO_ITEM  单视频授权
+	// AWEME_HOMEPAGE主页作品授权 new
+	// 说明：创建广告时，如果选用的aweme_id（抖音号）为「抖音号授权」，此时可以在广告下添加新的视频素材并发布到所选抖音号下进行推广；而当所选抖音号的授权类型为「主页作品授权」时，不具备此能力
+	// 抖音号授权：授权使用抖音号发布作品并推广、使用主页全部视频推广、直播间引流
+	// 主页作品授权：授权使用抖音号主页全部视频推广、直播间引流
 	AuthType []enum.AwemeAuthType `json:"auth_type,omitempty"`
 	// AuthStatus 授权状态， 可选值:
 	// AUTHRIZED: 授权中、AUTHRIZING: 待授权确认、INVALID: 授权失效
@@ -56,17 +62,17 @@ func (r AwemeAuthListRequest) Encode() string {
 
 // AwemeAuthListResponse 获取抖音授权关系
 type AwemeAuthListResponse struct {
-	model.BaseResponse
 	// Data json返回值
 	Data *AwemeAuthListData `json:"data,omitempty"`
+	model.BaseResponse
 }
 
 // AwemeAuthListData .
 type AwemeAuthListData struct {
-	// List .
-	List []AwemeAuthItem `json:"list,omitempty"`
 	// PageInfo .
 	PageInfo *model.PageInfo `json:"page_info,omitempty"`
+	// List .
+	List []AwemeAuthItem `json:"list,omitempty"`
 }
 
 type AwemeAuthItem struct {
@@ -107,4 +113,7 @@ type AwemeAuthVideo struct {
 	VideoCoverID string `json:"video_cover_id,omitempty"`
 	// VideoCoverURL 视频封面链接
 	VideoCoverURL string `json:"video_cover_url,omitempty"`
+	// Mid 视频素材ID
+	// （仅抖音视频会有此字段，抖音图文素材没有此字段）
+	Mid string `json:"mid,omitempty"`
 }
